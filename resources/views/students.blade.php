@@ -9,7 +9,9 @@
 
 <body>
     <h1>Student Management System</h1>
-    <p>Welcome to the Student Management System!</p>
+    <p>Welcome to the Student Management System! <br>
+        Mr. {{ $username }}
+    </p>
 </body>
 
 </html>
