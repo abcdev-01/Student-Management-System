@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
+use App\Models\Student;
 
 class StudentController extends Controller
 {
-    public function show($name)
+    public function show($id)
     {
-        return view('students', ['username' => $name]);
+        $student = Student::findOrFail($id);
+
+        return
+            view('students', ['username' => $student->name]);
     }
 }
