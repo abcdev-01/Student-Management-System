@@ -7,7 +7,7 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::latest()->get();
-        return view('students', ['students' => $students]);
+        return view('students.index', ['students' => $students]);
     }
     public function create()
     {
