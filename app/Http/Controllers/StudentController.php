@@ -7,7 +7,7 @@ class StudentController extends Controller
 {
     public function show($id)
     {
-        $student = Student::find($id);
-        return view('students', ['student' => $student]);
+        $student = Student::all($id);
+        return view('students', [compact('student')]);
     }
 }
