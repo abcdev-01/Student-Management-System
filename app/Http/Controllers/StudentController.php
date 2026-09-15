@@ -7,7 +7,7 @@ class StudentController extends Controller
 {
     public function show($id)
     {
-        $student = Student::all($id);
-        return view('students', [compact('student')]);
+        $student = Student::findOrFail($id);
+        return view('students', ['username' => $student->name]);
     }
 }
