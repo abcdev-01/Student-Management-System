@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <h1>Welcome to Student Management System, Mr. {{ $username }}</h1>
+    <p>Welcome to Student Management System, Mr. {{ $username }}</p>
 </body>
 
 </html>
