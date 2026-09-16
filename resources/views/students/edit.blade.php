@@ -21,16 +21,16 @@
         @csrf
         @method('PUT')
 
-        <label>First Name:</label>
-        <input type="text" name="first_name" value="{{ old('first_name', $student->first_name) }}">
-        <label>Last Name:</label>
-        <input type="text" name="last_name" value="{{ old('last_name', $student->last_name) }}">
-        <label>Email:</label>
-        <input type="email" name="email" value="{{ old('email', $student->email) }}">
-        <label>Age:</label>
-        <input type="number" name="age" value="{{ old('age', $student->age) }}">
-        <label>Course:</label>
-        <input type="text" name="course" value="{{ old('course', $student->course) }}">
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $student->first_name) }}">
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $student->last_name) }}">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" value="{{ old('email', $student->email) }}">
+        <label for="age">Age:</label>
+        <input type="number" name="age" id="age" value="{{ old('age', $student->age) }}">
+        <label for="course">Course:</label>
+        <input type="text" name="course" id="course" value="{{ old('course', $student->course) }}">
         <button type=" submit">Update</button>
     </form>
 

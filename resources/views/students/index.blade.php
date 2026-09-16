@@ -17,7 +17,7 @@
     <a href="{{ route('students.create') }}">Add Student
     </a>
     <form action="{{ route('students.index') }}" method="GET">
-        <label>
+        <label for="search">
             Search:
         </label>
         <input type="text" id="search" name="search" placeholder="Enter student name........"
