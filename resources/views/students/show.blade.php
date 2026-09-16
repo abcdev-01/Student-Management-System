@@ -7,10 +7,13 @@
 </head>
 
 <body>
-    <h1>Welcome to Student Management System, Mr. {{ $student->name }}</h1>
+    <h1>Welcome to Student Management System,</h1>
 
-    <p><strong>ID:</strong> {{ $student->id }}</p>
-    <p><strong>Name:</strong> {{ $student->name }}</p>
+    <p><strong>ID:</strong> {{ $student->formatted_id }}</p>
+    <p><strong>Full Name:</strong> {{ $student->full_name }}</p>
+    <p><strong>Email:</strong> {{ $student->email }}</p>
+    <p><strong>Age:</strong> {{ $student->age }}</p>
+    <p><strong>Course:</strong> {{ $student->course }}</p>
 
     <a href="{{ route('students.index') }}">Back to Students</a>
 </body>
