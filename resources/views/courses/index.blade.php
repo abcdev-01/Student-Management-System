@@ -14,7 +14,7 @@
     </a>
     <a href="{{ route('courses.create') }}">add Course
     </a>
-    <table>
+    <table border="1" cellpadding="6" cellspacing="0">
         <thead>
             <tr>
                 <th>ID</th>

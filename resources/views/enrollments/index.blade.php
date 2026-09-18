@@ -23,14 +23,14 @@
         <tbody>
             @forelse($enrollments as $enrollment)
                 <tr>
-                    <td>{{ $enrollment->student->name }}</td>
+                    <td>{{ $enrollment->student->full_name }}</td>
                     <td>{{ $enrollment->course->course_name }}</td>
-                    <td>{{ $enrollment->created_at}}</td>
+                    <td>{{ $enrollment->created_at->format('Y-m-d') }}</td>
                     <td>
                         <form action="{{ route('enrollments.destroy', $enrollment->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
-                            <button type="submit">Delete</button>
+                            <button type="submit">Delete this Enrollment</button>
                         </form>
                     </td>
                 </tr>

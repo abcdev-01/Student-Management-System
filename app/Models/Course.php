@@ -18,4 +18,8 @@ class Course extends Model
     {
         $this->attributes['course_code'] = mb_strtoupper(trim((string) $value), 'UTF-8');
     }
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 }

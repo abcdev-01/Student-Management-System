@@ -36,6 +36,13 @@
             <option value="Male">male</option>
             <option value="Female">Female</option>
         </select>
+        <label for="course_id">Course:</label>
+        <select name="course_id" id="course_id">
+            <option value="">Select a Course</option>
+            @foreach($courses as $course)
+                <option value="{{ $course->id }}">{{ $course->course_name }}</option>
+            @endforeach
+        </select>
         <label for=" status">Status</label>
         <select name="status" id="status">
             <option value="">Select a Status</option>

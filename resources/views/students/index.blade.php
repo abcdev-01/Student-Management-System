@@ -61,7 +61,7 @@
                     <td>{{$student->phone_number}}</td>
                     <td>{{ $student->age }}</td>
                     <td>{{$student->gender}}</td>
-                    <td>{{$student->created_at}}</td>
+                    <td>{{$student->created_at->format('Y-m-d')}}</td>
                     <td>@forelse($student->enrollments as $enrollment)
                         <tr>
                             <td>{{ $enrollment->course->course_name }}</td>

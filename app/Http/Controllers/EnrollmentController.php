@@ -2,38 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Enrollment;
 use App\Models\Course;
+use App\Models\Enrollment;
 use App\Models\Student;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class EnrollmentController extends Controller
 {
+    /** GET /enrollments — list every enrollment. */
     public function index(Request $request)
     {
-        $enrollments = Enrollment::query()
+        $enrollments = Enrollment::with(['student', 'course'])   // ← eager load (fixes N+1)
             ->oldest()
             ->get();
 
         return view('enrollments.index', ['enrollments' => $enrollments]);
     }
+
+    /** GET /enrollments/create — form to enroll a student. */
     public function create()
     {
-        $students = Student::all();
-        $courses = Course::all();
-        return view('enrollments.create', ['students' => $students, 'courses' => $courses]);
+        $students = Student::orderBy('first_name')->get();
+        $courses = Course::orderBy('course_name')->get();
+
+        return view('enrollments.create', [
+            'students' => $students,
+            'courses' => $courses,
+        ]);
     }
 
+    /** POST /enrollments — save a new enrollment. */
     public function store(Request $request)
     {
         $validated = $request->validate([
             'student_id' => 'required|exists:students,id',
-            'course_id' => 'required|exists:courses,id',
-            'enrollment_date' => 'required|date',
-
+            'course_id' => [
+                'required',
+                'exists:courses,id',
+                // Part C requirement: prevent duplicate enrollment
+                Rule::unique('enrollments', 'course_id')->where(
+                    fn($q) => $q->where('student_id', $request->input('student_id'))
+                ),
+            ],
+            'enrollment_date' => 'required|date|before_or_equal:today',
+        ], [
+            'student_id.exists' => 'The selected student does not exist.',
+            'course_id.exists' => 'The selected course does not exist.',
+            'course_id.unique' => 'This student is already enrolled in the selected course.',
+            'enrollment_date.before_or_equal' => 'The enrollment date cannot be in the future.',
         ]);
 
-        Enrollment::create($validated);
-        return redirect()->route('enrollments.index')->with('success', 'Enrollment created successfully.');
+        try {
+            Enrollment::create($validated);
+        } catch (QueryException $e) {
+            // Backstop in case the DB unique constraint fires first
+            return back()
+                ->withInput()
+                ->withErrors(['course_id' => 'This student is already enrolled in the selected course.']);
+        }
+
+        return redirect()
+            ->route('enrollments.index')
+            ->with('success', 'Enrollment created successfully.');
+    }
+
+    /** DELETE /enrollments/{enrollment} — remove an enrollment. */
+    public function destroy($id)
+    {
+        $enrollment = Enrollment::findOrFail($id);
+        $enrollment->delete();
+
+        return redirect()
+            ->route('enrollments.index')
+            ->with('success', 'Enrollment removed successfully.');
     }
 }

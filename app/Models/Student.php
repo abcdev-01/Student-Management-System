@@ -26,5 +26,9 @@ class Student extends Model
     {
         $this->attributes['course'] = mb_strtoupper(trim((string) $value), 'UTF-8');
     }
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 }
 
