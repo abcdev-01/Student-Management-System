@@ -23,16 +23,32 @@
         <input type="text" id="search" name="search" placeholder="Enter student name........"
             value="{{ request('search') }}">
         <button type="submit">Search</button>
-        <a href="{{ route('students.index') }}">Clear</a>
+        <a href="{{ route('students.index') }}">Cancel Search</a>
+        <label for="">Filter By Course</label>
+        <input type="text" name="filterByCourse" id="filterByCourse" placeholder="filter By Course...."
+            value="{{ request('filterByCourse') }}">
+        <label for="">Filter By Status</label>
+        <select name="filterByStatus" id="filterByStatus">
+            <option value="">---Status---</option>
+            <option value="active">Active</option>
+            <option value="graduated">Graduated</option>
+            <option value="dropped">Droppped</option>
+        </select>
+        <button type="submit">Apply Filter</button>
+        <a href="{{ route('students.index') }}">Cancel Filter</a>
     </form>
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table border=" 1" cellpadding="8" cellspacing="0">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Full Name</th>
                 <th>Email</th>
+                <th>Phone Number</th>
                 <th>Age</th>
+                <th>Gender</th>
+                <th>Date of Registration</th>
                 <th>Course</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -40,12 +56,17 @@
             @forelse($students as $student)
                 <tr>
                     <td>{{ $student->formatted_id }}</td>
-                    <td><a href="{{ route('students.show', $student->id) }}">{{ $student->full_name }}</a></td>
+                    <td><a href="{{ route('students.edit', $student->id) }}">{{ $student->full_name }}</a></td>
                     <td>{{ $student->email }}</td>
+                    <td>{{$student->phone_number}}</td>
                     <td>{{ $student->age }}</td>
+                    <td>{{$student->gender}}</td>
+                    <td>{{$student->date_Of_Registration}}</td>
                     <td>{{ $student->course }}</td>
+                    <td><b>{{$student->status}}</b>
+                    </td>
                     <td>
-                        <a href="{{ route('students.edit', $student->id) }}">Edit</a>
+                        <a href="{{ route('students.show', $student->id) }}">view</a>
 
                         <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline">
                             @csrf
@@ -56,7 +77,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6">No students found.</td>
+                    <td colspan="10">No students found.</td>
                 </tr>
             @endforelse
         </tbody>

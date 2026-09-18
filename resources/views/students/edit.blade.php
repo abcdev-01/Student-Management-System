@@ -27,11 +27,31 @@
         <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $student->last_name) }}">
         <label for="email">Email:</label>
         <input type="email" name="email" id="email" value="{{ old('email', $student->email) }}">
+        <label for="phone_number">Phone Number:</label>
+        <input type="phone" name="phone_number" id="phone_number"
+            value="{{ old('phone_number', $student->phone_number) }}">
         <label for="age">Age:</label>
         <input type="number" name="age" id="age" value="{{ old('age', $student->age) }}">
-        <label for="course">Course:</label>
+        <label for="gender">Gender</label>
+        <select name="gender" id="gender">
+            <option value="">Select a Gender</option>
+            <option value="Male">male</option>
+            <option value="Female">Female</option>
+        </select>
+        <label for="date_Of_Registration">Date of Registration</label>
+        <input type="date" name="date_Of_Registration" id="date_Of_Registration"
+            value="{{ old('date_Of_Registration', $student->date_Of_Registration) }}">
+        <label for=" course">Course:</label>
         <input type="text" name="course" id="course" value="{{ old('course', $student->course) }}">
-        <button type=" submit">Update</button>
+        <label for=" status">Status</label>
+        <select name="status" id="status">
+            <option value="">Select a Gender</option>
+            <option value="active">Active</option>
+            <option value="graduated">Graduated</option>
+            <option value="dropped">Dropped</option>
+        </select>
+        <button type=" submit">update</button>
+
     </form>
 
     <a href="{{ route('students.index') }}">Back</a>

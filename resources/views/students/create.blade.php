@@ -21,17 +21,34 @@
         @csrf
 
         <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" id="first_name" value="{{ old('first_name') }}">
-        <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" id="last_name" value="{{ old('last_name') }}">
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" value="{{ old('email') }}">
-        <label for="age">Age:</label>
-        <input type="number" name="age" id="age" value="{{ old('age') }}">
-        <label for="course">Course:</label>
-        <input type="text" name="course" id="course" value="{{ old('course') }}">
-
-        <button type="submit">Save</button>
+        <input type="text" name="first_name" id="first_name" placeholder="Enter first name">
+        <label for=" last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" placeholder="Enter last name">
+        <label for=" email">Email:</label>
+        <input type="email" name="email" id="email" placeholder="xxxx@gmail.com">
+        <label for=" phone_number">Phone Number:</label>
+        <input type="phone" name="phone_number" id="phone_number" placeholder="07xxxxxxx">
+        <label for=" age">Age:</label>
+        <input type="number" name="age" id="age" placeholder="Enter Age">
+        <label for=" gender">Gender</label>
+        <select name="gender" id="gender">
+            <option value="">Select a Gender</option>
+            <option value="Male">male</option>
+            <option value="Female">Female</option>
+        </select>
+        <label for="date_Of_Registration">Date of Registration</label>
+        <input type="date" name="date_Of_Registration" id="date_Of_Registration"
+            value="{{ old('dateOfRegistration') }}">
+        <label for=" course">Course:</label>
+        <input type="text" name="course" id="course" placeholder="Enter Student Course">
+        <label for=" status">Status</label>
+        <select name="status" id="status">
+            <option value="">Select a Status</option>
+            <option value="active">Active</option>
+            <option value="graduated">Graduated</option>
+            <option value="dropped">Dropped</option>
+        </select>
+        <button type=" submit">Save</button>
     </form>
 
     <a href="{{ route('students.index') }}">Back</a>

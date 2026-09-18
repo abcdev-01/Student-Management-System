@@ -6,7 +6,9 @@ class StudentController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search');
+        $search = $request->input('search', );
+        $filterByCourse = $request->input('filterByCourse');
+        $filterByStatus = $request->input('filterByStatus');
         $students = Student::query()
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
@@ -14,6 +16,21 @@ class StudentController extends Controller
                         ->orWhere('last_name', 'like', "%{$search}%")
                         ->orwhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
                 });
+            })
+            ->when(
+                $filterByCourse,
+                function ($query, $filterByCourse) {
+                    $query->where(function ($q) use ($filterByCourse) {
+                        $q->where('course', 'like', "%{$filterByCourse}%");
+                    });
+                }
+            )
+            ->when($filterByStatus, function ($query, $filterByStatus) {
+                $query->where(function ($q) use ($filterByStatus) {
+                    $q->orwhere('status', 'like', "{$filterByStatus}");
+
+                });
+
             })
             ->oldest()
             ->get();
@@ -29,6 +46,10 @@ class StudentController extends Controller
             'first_name' => 'required|string|max:100',
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:students',
+            'phone_number' => 'required|string|',
+            'gender' => 'required|string|',
+            'date_Of_Registration' => 'required|string|',
+            'status' => 'required|string|',
             'age' => 'required|integer|min:0',
             'course' => 'required|string|max:100'
         ]);
@@ -57,8 +78,11 @@ class StudentController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:students,email,' . $student->id,
             'age' => 'required|integer|min:0',
-            'course' => 'required|string|max:100'
-
+            'course' => 'required|string|max:100',
+            'phone_number' => 'required|string|',
+            'gender' => 'required|string|',
+            'date_Of_Registration' => 'required|string|',
+            'status' => 'required|string|',
         ]);
         $student->update($validated);
         return redirect()->route('students.index')->with('success', 'Student updated successfully.');

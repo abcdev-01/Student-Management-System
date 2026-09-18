@@ -15,8 +15,12 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->string('phone_number')->default('07xxxxxxx');
             $table->integer('age');
+            $table->string('gender');
+            $table->string('date_Of_Registration')->default('---');
             $table->string('course');
+            $table->string('status');
             $table->timestamps();
         });
     }
