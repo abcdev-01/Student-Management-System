@@ -36,11 +36,6 @@
             <option value="Male">male</option>
             <option value="Female">Female</option>
         </select>
-        <label for="date_Of_Registration">Date of Registration</label>
-        <input type="date" name="date_Of_Registration" id="date_Of_Registration"
-            value="{{ old('dateOfRegistration') }}">
-        <label for=" course">Course:</label>
-        <input type="text" name="course" id="course" placeholder="Enter Student Course">
         <label for=" status">Status</label>
         <select name="status" id="status">
             <option value="">Select a Status</option>
