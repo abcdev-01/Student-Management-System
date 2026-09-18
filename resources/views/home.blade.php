@@ -12,7 +12,7 @@
     <p>
         <a href="{{ route('students.create') }}">Register a student</a>
         <a href="{{ route('students.index') }}">Students Details</a>
-        <a href="{{ route('enrollments.index') }}">Courses Enrollment</a>
+        <a href="{{ route('courses.index') }}">Courses Enrollment</a>
     </p>
 </body>
 
