@@ -38,7 +38,7 @@
                     <td colspan="4">No courses found.</td>
                 </tr>
             @endforelse
-        </tbody>                            
+        </tbody>
     </table>
 </body>
 
