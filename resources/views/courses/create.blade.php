@@ -18,6 +18,17 @@
             <label for="course_code">Course Code</label>
             <input type="text" name="course_code" id="course_code" required>
         </div>
+        <div>
+            <label for="duration">Duration</label>
+            <input type="text" name="duration" id="duration" required>
+        </div>
+        <div>
+            <label for="status">Status</label>
+            <select name="status" id="status" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+            </select>
+        </div>
         <button type="submit">Create Course</button>
     </form>
 </body>

@@ -48,10 +48,8 @@ class StudentController extends Controller
             'email' => 'required|email|unique:students',
             'phone_number' => 'required|string|',
             'gender' => 'required|string|',
-            'date_Of_Registration' => 'required|string|',
             'status' => 'required|string|',
             'age' => 'required|integer|min:0',
-            'course' => 'required|string|max:100'
         ]);
 
         Student::create($validated);
@@ -78,10 +76,8 @@ class StudentController extends Controller
             'last_name' => 'required|string|max:100',
             'email' => 'required|email|unique:students,email,' . $student->id,
             'age' => 'required|integer|min:0',
-            'course' => 'required|string|max:100',
             'phone_number' => 'required|string|',
             'gender' => 'required|string|',
-            'date_Of_Registration' => 'required|string|',
             'status' => 'required|string|',
         ]);
         $student->update($validated);

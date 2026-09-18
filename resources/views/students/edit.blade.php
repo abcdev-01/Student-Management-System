@@ -35,20 +35,15 @@
         <label for="gender">Gender</label>
         <select name="gender" id="gender">
             <option value="">Select a Gender</option>
-            <option value="Male">male</option>
-            <option value="Female">Female</option>
+            <option value="Male" {{ $student->gender === 'Male' ? 'selected' : '' }}>Male</option>
+            <option value="Female" {{ $student->gender === 'Female' ? 'selected' : '' }}>Female</option>
         </select>
-        <label for="date_Of_Registration">Date of Registration</label>
-        <input type="date" name="date_Of_Registration" id="date_Of_Registration"
-            value="{{ old('date_Of_Registration', $student->date_Of_Registration) }}">
-        <label for=" course">Course:</label>
-        <input type="text" name="course" id="course" value="{{ old('course', $student->course) }}">
         <label for=" status">Status</label>
         <select name="status" id="status">
-            <option value="">Select a Gender</option>
-            <option value="active">Active</option>
-            <option value="graduated">Graduated</option>
-            <option value="dropped">Dropped</option>
+            <option value="">Select a Status</option>
+            <option value="active" {{ $student->status === 'active' ? 'selected' : '' }}>Active</option>
+            <option value="graduated" {{ $student->status === 'graduated' ? 'selected' : '' }}>Graduated</option>
+            <option value="dropped" {{ $student->status === 'dropped' ? 'selected' : '' }}>Dropped</option>
         </select>
         <button type=" submit">update</button>
 

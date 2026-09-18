@@ -9,8 +9,9 @@
 
 <body>
     <h1>Enrollments</h1>
+    <a href="{{ route('home') }}">Home</a>
     <a href="{{ route('enrollments.create') }}">Add Enrollment</a>
-    <table>
+    <table border="1" cellpading="6" cellspacing="0">
         <thead>
             <tr>
                 <th>Student</th>
@@ -22,9 +23,9 @@
         <tbody>
             @forelse($enrollments as $enrollment)
                 <tr>
-
                     <td>{{ $enrollment->student->name }}</td>
                     <td>{{ $enrollment->course->course_name }}</td>
+                    <td>{{ $enrollment->created_at}}</td>
                     <td>
                         <form action="{{ route('enrollments.destroy', $enrollment->id) }}" method="POST">
                             @csrf

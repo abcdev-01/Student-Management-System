@@ -16,7 +16,7 @@
     <p><strong>Phone:</strong> {{ $student->phone }}</p>
     <p><strong>Age:</strong> {{ $student->age }}</p>
     <p><strong>Gender:</strong> {{ $student->gender }}</p>
-    <p><strong>Date of Registration:</strong> {{ $student->date_of_registration }}</p>
+    <p><strong>Date of Registration:</strong> {{ $student->created_at }}</p>
     <p><strong>Status:</strong> {{ $student->status }}</p>
     <a href="{{ route('students.index') }}">Back to Students</a>
 </body>

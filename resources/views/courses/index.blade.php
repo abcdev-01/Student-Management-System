@@ -8,8 +8,12 @@
 </head>
 
 <body>
-    <h1>Courses</h1>
-    <a href="{{ route('courses.create') }}">add Course</a>
+    <h1>Available Courses</h1>
+    <a href="{{ route('home') }}">
+        Home
+    </a>
+    <a href="{{ route('courses.create') }}">add Course
+    </a>
     <table>
         <thead>
             <tr>
@@ -22,7 +26,7 @@
         <tbody>
             @forelse($courses as $course)
                 <tr>
-                    <td>{{ $course->id }}</td>
+                    <td>{{ $course->formatted_id }}</td>
                     <td><a href="{{ route('courses.edit', $course->id) }}">{{ $course->course_name }}</a></td>
                     <td>{{ $course->course_code }}</td>
                     <td>
@@ -31,6 +35,9 @@
                             @method('DELETE')
                             <button type="submit">Delete</button>
                         </form>
+
+
+
                     </td>
                 </tr>
             @empty

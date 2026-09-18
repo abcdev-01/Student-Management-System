@@ -30,9 +30,9 @@
         <label for="">Filter By Status</label>
         <select name="filterByStatus" id="filterByStatus">
             <option value="">---Status---</option>
-            <option value="active">Active</option>
-            <option value="graduated">Graduated</option>
-            <option value="dropped">Droppped</option>
+            <option value="active" {{ request('filterByStatus') === 'active' ? 'selected' : '' }}>Active</option>
+            <option value="graduated" {{ request('filterByStatus') === 'graduated' ? 'selected' : '' }}>Graduated</option>
+            <option value="dropped" {{ request('filterByStatus') === 'dropped' ? 'selected' : '' }}>Dropped</option>
         </select>
         <button type="submit">Apply Filter</button>
         <a href="{{ route('students.index') }}">Cancel Filter</a>
@@ -46,8 +46,8 @@
                 <th>Phone Number</th>
                 <th>Age</th>
                 <th>Gender</th>
-                <th>Date of Registration</th>
-                <th>Course</th>
+                <th>Registered at</th>
+                <th>Course Enrolled</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -61,7 +61,7 @@
                     <td>{{$student->phone_number}}</td>
                     <td>{{ $student->age }}</td>
                     <td>{{$student->gender}}</td>
-                    <td>{{$student->date_Of_Registration}}</td>
+                    <td>{{$student->created_at}}</td>
                     <td>{{ $student->course }}</td>
                     <td><b>{{$student->status}}</b>
                     </td>
