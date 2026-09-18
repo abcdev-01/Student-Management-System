@@ -8,25 +8,25 @@
 </head>
 
 <body>
-    <h1>Courses</h1>
-    <a href="{{ route('courses.create') }}">add Course</a>
+    <h1>Enrollments</h1>
+    <a href="{{ route('enrollments.create') }}">Add Enrollment</a>
     <table>
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Course Name</th>
-                <th>Course Code</th>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Enrollment Date</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($courses as $course)
+            @forelse($enrollments as $enrollment)
                 <tr>
-                    <td>{{ $course->id }}</td>
-                    <td><a href="{{ route('courses.edit', $course->id) }}">{{ $course->course_name }}</a></td>
-                    <td>{{ $course->course_code }}</td>
+
+                    <td>{{ $enrollment->student->name }}</td>
+                    <td>{{ $enrollment->course->course_name }}</td>
                     <td>
-                        <form action="{{ route('courses.destroy', $course->id) }}" method="POST">
+                        <form action="{{ route('enrollments.destroy', $enrollment->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit">Delete</button>
@@ -35,10 +35,10 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4">No courses found.</td>
+                    <td colspan="4">No enrollments found.</td>
                 </tr>
             @endforelse
-        </tbody>                            
+        </tbody>
     </table>
 </body>
 
