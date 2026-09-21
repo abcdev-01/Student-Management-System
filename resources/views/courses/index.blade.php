@@ -12,8 +12,9 @@
     <a href="{{ route('home') }}">
         Home
     </a>
-    <a href="{{ route('courses.create') }}">add Course
+    <a href="{{ route('courses.create') }}">add New Course
     </a>
+    <a href="{{ route('enrollments.index') }}">Enrollments</a>
     <table border="1" cellpadding="6" cellspacing="0">
         <thead>
             <tr>

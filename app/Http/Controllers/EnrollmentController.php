@@ -11,17 +11,16 @@ use Illuminate\Validation\Rule;
 
 class EnrollmentController extends Controller
 {
-    /** GET /enrollments — list every enrollment. */
+
     public function index(Request $request)
     {
-        $enrollments = Enrollment::with(['student', 'course'])   // ← eager load (fixes N+1)
+        $enrollments = Enrollment::with(['student', 'course'])
             ->oldest()
             ->get();
 
         return view('enrollments.index', ['enrollments' => $enrollments]);
     }
 
-    /** GET /enrollments/create — form to enroll a student. */
     public function create()
     {
         $students = Student::orderBy('first_name')->get();
@@ -33,7 +32,6 @@ class EnrollmentController extends Controller
         ]);
     }
 
-    /** POST /enrollments — save a new enrollment. */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -41,7 +39,6 @@ class EnrollmentController extends Controller
             'course_id' => [
                 'required',
                 'exists:courses,id',
-                // Part C requirement: prevent duplicate enrollment
                 Rule::unique('enrollments', 'course_id')->where(
                     fn($q) => $q->where('student_id', $request->input('student_id'))
                 ),
@@ -57,7 +54,6 @@ class EnrollmentController extends Controller
         try {
             Enrollment::create($validated);
         } catch (QueryException $e) {
-            // Backstop in case the DB unique constraint fires first
             return back()
                 ->withInput()
                 ->withErrors(['course_id' => 'This student is already enrolled in the selected course.']);

@@ -9,15 +9,11 @@
 
 <body>
     <h1>Student Management System</h1>
-    <p>
-        <a href="{{ route('students.create') }}">Register a student</a>
-        <a href="{{ route('students.index') }}">Students Details</a>
-        <a href="{{ route('courses.index') }}">Courses Management</a>
-        <a href="{{ route('enrollments.index') }}">Course Enrollments</a>
-
-    </p>
-</body>
-
+    <li>
+        <ul><a href="{{ route('students.create') }}">Student Registration</a></ul>
+        <ul><a href="{{ route('students.index') }}">Students Details</a></ul>
+        <ul> <a href="{{ route('courses.index') }}">Courses Management</a></ul>
+    </li>
 </body>
 
 </html>
