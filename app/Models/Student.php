@@ -3,7 +3,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 class Student extends Model
 {
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone_number', 'age', 'gender', 'status'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone_number', 'age', 'gender', 'course', 'status'];
     public function getFormattedIdAttribute(): string
     {
         return str_pad($this->id, 4, '0', STR_PAD_LEFT);

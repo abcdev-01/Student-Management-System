@@ -14,11 +14,11 @@ class Enrollment extends Model
 
     public function student()
     {
-        return $this->belongsTo(Student::class);   // uses student_id
+        return $this->belongsTo(Student::class);
     }
 
     public function course()
     {
-        return $this->belongsTo(Course::class);    // uses course_id
+        return $this->belongsTo(Course::class);
     }
 }

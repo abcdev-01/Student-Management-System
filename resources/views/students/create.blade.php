@@ -37,10 +37,10 @@
             <option value="Female">Female</option>
         </select>
         <label for="course_id">Course:</label>
-        <select name="course_id" id="course_id">
-            <option value="">Select a Course</option>
+        <select name="course" id="course_id">
+            <option value="">--Course--</option>
             @foreach($courses as $course)
-                <option value="{{ $course->id }}">{{ $course->course_name }}</option>
+                <option value="{{ $course->course_name }}">{{ $course->course_name }}</option>
             @endforeach
         </select>
         <label for=" status">Status</label>

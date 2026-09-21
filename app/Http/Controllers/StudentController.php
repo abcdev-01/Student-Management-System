@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\Student;
+use App\Models\Course;
 use Illuminate\Http\Request;
 class StudentController extends Controller
 {
@@ -38,7 +39,9 @@ class StudentController extends Controller
     }
     public function create()
     {
-        return view('students.create');
+        $courses = Course::all();
+
+        return view('students.create', ['courses' => $courses]);
     }
     public function store(Request $request)
     {
@@ -48,6 +51,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:students',
             'phone_number' => 'required|string|',
             'gender' => 'required|string|',
+            'course' => 'required|string|',
             'status' => 'required|string|',
             'age' => 'required|integer|min:0',
         ]);
@@ -78,6 +82,7 @@ class StudentController extends Controller
             'age' => 'required|integer|min:0',
             'phone_number' => 'required|string|',
             'gender' => 'required|string|',
+            'course' => 'required|string|',
             'status' => 'required|string|',
         ]);
         $student->update($validated);

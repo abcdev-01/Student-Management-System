@@ -62,27 +62,18 @@
                     <td>{{ $student->age }}</td>
                     <td>{{$student->gender}}</td>
                     <td>{{$student->created_at->format('Y-m-d')}}</td>
-                    <td>@forelse($student->enrollments as $enrollment)
-                        <tr>
-                            <td>{{ $enrollment->course->course_name }}</td>
-                        </tr>
-                    @empty
-                    <tr>
-                        <td>---</td>
-                    </tr>
-                @endforelse
-                </td>
-                <td><b>{{$student->status}}</b>
-                </td>
-                <td>
-                    <a href="{{ route('students.show', $student->id) }}">view</a>
+                    <td>{{$student->course   }}</td>
+                    <td><b>{{$student->status}}</b>
+                    </td>
+                    <td>
+                        <a href="{{ route('students.show', $student->id) }}">view</a>
 
-                    <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Delete this student?')">Delete</button>
-                    </form>
-                </td>
+                        <form action="{{ route('students.destroy', $student->id) }}" method="POST" style="display:inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" onclick="return confirm('Delete this student?')">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             @empty
                 <tr>

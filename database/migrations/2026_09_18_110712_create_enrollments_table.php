@@ -11,17 +11,16 @@ return new class extends Migration {
             $table->id();
 
             $table->foreignId('student_id')
-                ->constrained('students')            // student_id → students.id
-                ->cascadeOnDelete();                 // deleting a student removes their enrollments
+                ->constrained('students')
+                ->cascadeOnDelete();
 
             $table->foreignId('course_id')
-                ->constrained('courses')             // course_id → courses.id
-                ->restrictOnDelete();                // a course with enrollments cannot be deleted
+                ->constrained('courses')
+                ->restrictOnDelete();
 
             $table->date('enrollment_date');
             $table->timestamps();
 
-            // Part C: prevent duplicate enrollment at the DB level
             $table->unique(['student_id', 'course_id'], 'uniq_student_course');
         });
     }
