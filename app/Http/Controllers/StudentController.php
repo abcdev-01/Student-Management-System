@@ -1,100 +1,87 @@
 <?php
+
 namespace App\Http\Controllers;
+
 use App\Models\Student;
-use App\Models\Course;
 use Illuminate\Http\Request;
+
 class StudentController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->input('search', );
-        $filterByCourse = $request->input('filterByCourse');
-        $filterByStatus = $request->input('filterByStatus');
-        $students = Student::query()
-            ->when($search, function ($query, $search) {
-                $query->where(function ($q) use ($search) {
-                    $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orwhereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ["%{$search}%"]);
-                });
-            })
-            ->when(
-                $filterByCourse,
-                function ($query, $filterByCourse) {
-                    $query->where(function ($q) use ($filterByCourse) {
-                        $q->orwhere('course', 'like', "{$filterByCourse}");
-                    });
-                }
-            )
-            ->when($filterByStatus, function ($query, $filterByStatus) {
-                $query->where(function ($q) use ($filterByStatus) {
-                    $q->orwhere('status', 'like', "{$filterByStatus}");
-
-                });
-
-            })
-            ->oldest()
-            ->get();
-        $courses = Course::orderBy('course_name')->get();
-        return
-            view('students.index', compact('students', 'courses'));
+        return view('dashboard');
     }
-    public function create()
+
+    public function list(Request $request)
     {
-        $courses = Course::all();
+        $query = Student::query();
 
-        return view('students.create', compact(['courses']));
+        if ($request->filled('search')) {
+            $query->where('full_name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('course_id')) {
+            $query->whereHas('courses', function ($q) use ($request) {
+                $q->where('courses.id', $request->course_id);
+            });
+        }
+
+        return response()->json($query->with('courses')->orderBy('id', 'desc')->get());
     }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
-            'email' => 'required|email|unique:students',
-            'phone_number' => 'required|string|',
-            'gender' => 'required|string|',
-            'course' => 'required|string|',
-            'status' => 'required|string|',
-            'age' => 'required|integer|min:0',
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'age' => 'required|integer|min:16',
+            'phone_number' => 'required|string|max:20',
+            'gender' => 'required|in:Male,Female,Other',
+            'registration_date' => 'required|date',
+            'status' => 'required|in:Active,Graduated,Dropped',
         ]);
 
-        Student::create($validated);
-        return redirect()->route('students.index')->with('success', 'Student created successfully.');
+        $student = Student::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'student' => $student
+        ], 201);
     }
 
-    public function show($id)
+    public function show(Student $student)
     {
-        $student = Student::findOrFail($id);
-
-        return view('students.show', ['student' => $student]);
-
+        return response()->json($student->load('courses'));
     }
-    public function edit($id)
+
+    public function update(Request $request, Student $student)
     {
-        $student = Student::findOrFail($id);
-        return view('students.edit', ['student' => $student]);
-    }
-    public function update(Request $request, $id)
-    {
-        $student = Student::findOrFail($id);
         $validated = $request->validate([
-            'first_name' => 'required|string|max:100',
-            'last_name' => 'required|string|max:100',
+            'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email,' . $student->id,
-            'age' => 'required|integer|min:0',
-            'phone_number' => 'required|string|',
-            'gender' => 'required|string|',
-            'course' => 'required|string|',
-            'status' => 'required|string|',
+            'age' => 'required|integer|min:16',
+            'phone_number' => 'required|string|max:20',
+            'gender' => 'required|in:Male,Female,Other',
+            'registration_date' => 'required|date',
+            'status' => 'required|in:Active,Graduated,Dropped',
         ]);
+
         $student->update($validated);
-        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
+
+        return response()->json([
+            'success' => true,
+            'student' => $student
+        ]);
     }
-    public function destroy($id)
+
+    public function destroy(Student $student)
     {
-        $student = Student::findOrFail($id);
         $student->delete();
-        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
+
+        return response()->json(['success' => true]);
     }
 }
-

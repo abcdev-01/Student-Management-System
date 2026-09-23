@@ -3,64 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Student;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index(Request $request)
+    public function list()
     {
-        $courses = Course::query()
-            ->oldest()
-            ->get();
-
-        return view('courses.index', ['courses' => $courses]);
-    }
-
-    public function create()
-    {
-        $students = Student::all();
-        return
-            view('courses.create');
+        return response()->json(Course::orderBy('id', 'desc')->get());
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'course_name' => 'required|string|max:100',
-            'course_code' => 'required|string|max:10|unique:courses',
-            'duration' => 'required|integer|min:3|max:4',
-            'status' => 'required|in:active,inactive',
+            'course_code' => 'required|string|unique:courses,course_code',
+            'course_name' => 'required|string|max:255',
         ]);
 
-        Course::create($validated);
-        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        $course = Course::create($validated);
+
+        return response()->json([
+            'success' => true,
+            'course' => $course
+        ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function destroy(Course $course)
     {
-        $course = Course::findOrFail($id);
+        if ($course->students()->exists()) {
+            return response()->json([
+                'error' => 'Cannot delete course with enrolled students.'
+            ], 422);
+        }
 
-        $validated = $request->validate([
-            'course_name' => 'required|string|max:100',
-            'course_code' => 'required|string|max:10|unique:courses,course_code,' . $course->id,
-            'duration' => 'required|integer|min:3|max:4',
-            'status' => 'required|in:active,inactive',
-        ]);
-
-        $course->update($validated);
-        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
-    }
-
-    public function edit($id)
-    {
-        $course = Course::findOrFail($id);
-        return view('courses.edit', ['course' => $course]);
-    }
-    public function destroy($id)
-    {
-        $course = Course::findOrFail($id);
         $course->delete();
-        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+
+        return response()->json(['success' => true]);
     }
 }
