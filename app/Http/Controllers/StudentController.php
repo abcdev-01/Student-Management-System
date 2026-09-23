@@ -22,7 +22,7 @@ class StudentController extends Controller
                 $filterByCourse,
                 function ($query, $filterByCourse) {
                     $query->where(function ($q) use ($filterByCourse) {
-                        $q->where('course', 'like', "%{$filterByCourse}%");
+                        $q->orwhere('course', 'like', "{$filterByCourse}");
                     });
                 }
             )
@@ -35,13 +35,15 @@ class StudentController extends Controller
             })
             ->oldest()
             ->get();
-        return view('students.index', ['students' => $students]);
+        $courses = Course::orderBy('course_name')->get();
+        return
+            view('students.index', compact('students', 'courses'));
     }
     public function create()
     {
         $courses = Course::all();
 
-        return view('students.create', ['courses' => $courses]);
+        return view('students.create', compact(['courses']));
     }
     public function store(Request $request)
     {

@@ -24,11 +24,18 @@
             value="{{ request('search') }}">
         <button type="submit">Search</button>
         <a href="{{ route('students.index') }}">Cancel Search</a>
-        <label for="">Filter By Course</label>
-        <input type="text" name="filterByCourse" id="filterByCourse" placeholder="filter By Course...."
-            value="{{ request('filterByCourse') }}">
+        <label for="filterByCourse">Filter By Course</label>
+        <select name="filterByCourse" id="filterByCourse">
+            <option value="">---Course---</option>
+            @foreach ($courses as $course)
+                <option value="{{ $course->course_name }}">
+                    {{ $course->course_name}} </option>
+            @endforeach
+
+        </select>
+
         <label for="">Filter By Status</label>
-        <select name="filterByStatus" id="filterByStatus">
+        <select name=" filterByStatus" id="filterByStatus">
             <option value="">---Status---</option>
             <option value="active" {{ request('filterByStatus') === 'active' ? 'selected' : '' }}>Active</option>
             <option value="graduated" {{ request('filterByStatus') === 'graduated' ? 'selected' : '' }}>Graduated</option>
