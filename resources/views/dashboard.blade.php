@@ -195,7 +195,7 @@
                     </div>
                     <div class="form-group">
                         <label>Age</label>
-                        <input type="number" id="age" required min="16">
+                        <input type="number" id="age" required min="16" max="120">
                     </div>
                     <div class="form-group">
                         <label>Phone Number</label>
@@ -325,6 +325,39 @@
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         };
 
+        /* ---------- helpers ---------- */
+
+        const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[ch]));
+
+        // fetch + parse JSON without throwing on HTML error pages
+        async function requestJson(url, options = {}) {
+            const res = await fetch(url, options);
+            const text = await res.text();
+            let data = null;
+            if (text) {
+                try { data = JSON.parse(text); }
+                catch { data = { message: text }; }
+            }
+            if (!res.ok) {
+                const err = new Error(`HTTP ${res.status}`);
+                err.status = res.status;
+                err.data = data;
+                throw err;
+            }
+            return data;
+        }
+
+        function reportError(prefix, err) {
+            const detail = err?.data?.errors
+                ? JSON.stringify(err.data.errors)
+                : (err?.data?.message || err?.message || 'Unknown error');
+            alert(`${prefix}: ${detail}`);
+        }
+
+        /* ---------- bootstrap ---------- */
+
         document.addEventListener('DOMContentLoaded', () => {
             fetchStudents();
             fetchCourses();
@@ -337,75 +370,96 @@
             document.getElementById('course-form').addEventListener('submit', handleCreateCourse);
             document.getElementById('enrollment-form').addEventListener('submit', handleEnrollment);
 
-            document.getElementById('search-input').addEventListener('input', fetchStudents);
+            // debounce the search box
+            let searchTimer;
+            document.getElementById('search-input').addEventListener('input', () => {
+                clearTimeout(searchTimer);
+                searchTimer = setTimeout(fetchStudents, 250);
+            });
             document.getElementById('filter-status').addEventListener('change', fetchStudents);
             document.getElementById('filter-course').addEventListener('change', fetchStudents);
             document.getElementById('cancel-edit-btn').addEventListener('click', resetStudentForm);
+
+            // delegated actions for the students table
+            document.querySelector('#students-table tbody').addEventListener('click', (e) => {
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+                const { action, id } = btn.dataset;
+                if (action === 'view') viewStudent(id);
+                else if (action === 'edit') editStudent(id);
+                else if (action === 'delete') deleteStudent(id);
+            });
+
+            // delegated actions for the courses table
+            document.querySelector('#courses-table tbody').addEventListener('click', (e) => {
+                const btn = e.target.closest('button[data-action="delete-course"]');
+                if (btn) deleteCourse(btn.dataset.id);
+            });
+
+            // close modal on backdrop click / Escape
+            document.getElementById('details-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'details-modal') closeModal('details-modal');
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal('details-modal');
+            });
         });
 
+        /* ---------- students ---------- */
+
+        let studentsRequestSeq = 0;
+
         async function fetchStudents() {
-            const search = document.getElementById('search-input').value;
-            const status = document.getElementById('filter-status').value;
-            const courseId = document.getElementById('filter-course').value;
-            const params = new URLSearchParams({ search, status, course_id: courseId });
-            const res = await fetch(`/api/students?${params.toString()}`);
-            const students = await res.json();
+            const seq = ++studentsRequestSeq;
+
+            const params = new URLSearchParams({
+                search: document.getElementById('search-input').value.trim(),
+                status: document.getElementById('filter-status').value,
+                course_id: document.getElementById('filter-course').value
+            });
+
+            let students;
+            try {
+                students = await requestJson(`/api/students?${params.toString()}`);
+            } catch (err) {
+                console.error(err);
+                return;
+            }
+            // a newer request has already been fired — discard this response
+            if (seq !== studentsRequestSeq) return;
 
             const tbody = document.querySelector('#students-table tbody');
             const studentSelect = document.getElementById('enroll_student_id');
-
-            tbody.innerHTML = '';
             const currentSelection = studentSelect.value;
-            studentSelect.innerHTML = '<option value="">-- Choose Student --</option>';
 
-            students.forEach(student => {
-                tbody.innerHTML += `
+            tbody.innerHTML = students.map((student) => `
                 <tr>
-                    <td>${student.full_name}</td>
-                    <td>${student.email}</td>
-                    <td><span class="badge ${student.status}">${student.status}</span></td>
-                    <td>${student.registration_date}</td>
+                    <td>${escapeHtml(student.full_name)}</td>
+                    <td>${escapeHtml(student.email)}</td>
+                    <td><span class="badge ${escapeHtml(student.status)}">${escapeHtml(student.status)}</span></td>
+                    <td>${escapeHtml(student.registration_date)}</td>
                     <td>
-                        <button class="btn-secondary btn-sm" onclick="viewStudent(${student.id})">View</button>
-                        <button class="btn-sm" onclick="editStudent(${student.id})">Edit</button>
-                        <button class="btn-danger btn-sm" onclick="deleteStudent(${student.id})">Delete</button>
+                        <button class="btn-secondary btn-sm" data-action="view" data-id="${student.id}">View</button>
+                        <button class="btn-sm" data-action="edit" data-id="${student.id}">Edit</button>
+                        <button class="btn-danger btn-sm" data-action="delete" data-id="${student.id}">Delete</button>
                     </td>
                 </tr>
-            `;
-                studentSelect.innerHTML += `<option value="${student.id}">${student.full_name}</option>`;
-            });
+            `).join('');
 
-            studentSelect.value = currentSelection;
-        }
+            studentSelect.innerHTML =
+                '<option value="">-- Choose Student --</option>' +
+                students.map(s => `<option value="${s.id}">${escapeHtml(s.full_name)}</option>`).join('');
 
-        async function fetchCourses() {
-            const res = await fetch('/api/courses');
-            const courses = await res.json();
-
-            const tbody = document.querySelector('#courses-table tbody');
-            const filterCourse = document.getElementById('filter-course');
-            const enrollCourse = document.getElementById('enroll_course_id');
-
-            tbody.innerHTML = '';
-            filterCourse.innerHTML = '<option value="">-- Filter by Enrolled Course --</option>';
-            enrollCourse.innerHTML = '<option value="">-- Choose Course --</option>';
-
-            courses.forEach(course, => {
-                tbody.innerHTML += `
-                <tr>
-                    <td>${course.course_code}</td>
-                    <td>${course.course_name}</td>
-                    <td><button class="btn-danger btn-sm" onclick="deleteCourse(${course.id})">Delete</button></td>
-                </tr>
-            `;
-                filterCourse.innerHTML += `<option value="${course.id}">${course.course_name}</option>`;
-                enrollCourse.innerHTML += `<option value="${course.id}">${course.course_name}</option>`;
-            });
+            // keep the previous choice only if that student is still listed
+            if (students.some(s => String(s.id) === currentSelection)) {
+                studentSelect.value = currentSelection;
+            }
         }
 
         async function handleSaveStudent(e) {
             e.preventDefault();
             const id = document.getElementById('student-id').value;
+
             const payload = {
                 full_name: document.getElementById('full_name').value,
                 email: document.getElementById('email').value,
@@ -413,40 +467,42 @@
                 phone_number: document.getElementById('phone_number').value,
                 gender: document.getElementById('gender').value,
                 registration_date: document.getElementById('registration_date').value,
-                status: document.getElementById('status').value,
+                status: document.getElementById('status').value
             };
 
-            const url = id ? `/api/students/${id}` : '/api/students';
-            const method = id ? 'PUT' : 'POST';
-
-            const res = await fetch(url, { method, headers, body: JSON.stringify(payload) });
-            const data = await res.json();
-
-            if (res.ok) {
+            try {
+                await requestJson(id ? `/api/students/${id}` : '/api/students', {
+                    method: id ? 'PUT' : 'POST',
+                    headers,
+                    body: JSON.stringify(payload)
+                });
                 resetStudentForm();
-                fetchStudents();
-            } else {
-                alert("Validation Failed: " + JSON.stringify(data.errors || data));
+                await fetchStudents();
+            } catch (err) {
+                reportError('Validation failed', err);
             }
         }
 
         async function editStudent(id) {
-            const res = await fetch(`/api/students/${id}`);
-            const s = await res.json();
+            try {
+                const s = await requestJson(`/api/students/${id}`);
 
-            document.getElementById('student-id').value = s.id;
-            document.getElementById('full_name').value = s.full_name;
-            document.getElementById('email').value = s.email;
-            document.getElementById('age').value = s.age;
-            document.getElementById('phone_number').value = s.phone_number;
-            document.getElementById('gender').value = s.gender;
-            document.getElementById('registration_date').value = s.registration_date;
-            document.getElementById('status').value = s.status;
+                document.getElementById('student-id').value = s.id;
+                document.getElementById('full_name').value = s.full_name;
+                document.getElementById('email').value = s.email;
+                document.getElementById('age').value = s.age;
+                document.getElementById('phone_number').value = s.phone_number;
+                document.getElementById('gender').value = s.gender;
+                document.getElementById('registration_date').value = s.registration_date;
+                document.getElementById('status').value = s.status;
 
-            document.getElementById('form-title').innerText = "Edit Student Profile Record Information";
-            document.getElementById('save-btn').innerText = "Update Record Changes";
-            document.getElementById('cancel-edit-btn').style.display = "block";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('form-title').innerText = "Edit Student Profile Record Information";
+                document.getElementById('save-btn').innerText = "Update Record Changes";
+                document.getElementById('cancel-edit-btn').style.display = "block";
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (err) {
+                reportError('Could not load student', err);
+            }
         }
 
         function resetStudentForm() {
@@ -459,9 +515,59 @@
         }
 
         async function deleteStudent(id) {
-            if (confirm("Confirm student profile purging? All execution records will drop instantly.")) {
-                await fetch(`/api/students/${id}`, { method: 'DELETE', headers });
+            if (!confirm("Confirm student profile purging? All execution records will drop instantly.")) return;
+            try {
+                await requestJson(`/api/students/${id}`, { method: 'DELETE', headers });
+                await fetchStudents();
+            } catch (err) {
+                reportError('Delete failed', err);
+            }
+        }
+
+        /* ---------- courses ---------- */
+
+        async function fetchCourses() {
+            let courses;
+            try {
+                courses = await requestJson('/api/courses');
+            } catch (err) {
+                console.error(err);
+                return;
+            }
+
+            const tbody = document.querySelector('#courses-table tbody');
+            const filterCourse = document.getElementById('filter-course');
+            const enrollCourse = document.getElementById('enroll_course_id');
+
+            const prevFilter = filterCourse.value;
+            const prevEnroll = enrollCourse.value;
+
+            tbody.innerHTML = courses.map(c => `
+                <tr>
+                    <td>${escapeHtml(c.course_code)}</td>
+                    <td>${escapeHtml(c.course_name)}</td>
+                    <td>
+                        <button class="btn-danger btn-sm" data-action="delete-course" data-id="${c.id}">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            const options = courses
+                .map(c => `<option value="${c.id}">${escapeHtml(c.course_name)}</option>`)
+                .join('');
+
+            filterCourse.innerHTML = '<option value="">-- Filter by Enrolled Course --</option>' + options;
+            enrollCourse.innerHTML = '<option value="">-- Choose Course --</option>' + options;
+
+            if (courses.some(c => String(c.id) === prevFilter)) {
+                filterCourse.value = prevFilter;
+            } else if (prevFilter) {
+                // the filtered course was deleted — refresh the roster
                 fetchStudents();
+            }
+
+            if (courses.some(c => String(c.id) === prevEnroll)) {
+                enrollCourse.value = prevEnroll;
             }
         }
 
@@ -472,27 +578,27 @@
                 course_name: document.getElementById('course_name').value
             };
 
-            const res = await fetch('/api/courses', { method: 'POST', headers, body: JSON.stringify(payload) });
-
-            if (res.ok) {
+            try {
+                await requestJson('/api/courses', { method: 'POST', headers, body: JSON.stringify(payload) });
                 document.getElementById('course-form').reset();
-                fetchCourses();
-            } else {
-                const data = await res.json();
-                alert(data.message || "Duplicate Course Entries Flagged");
+                await fetchCourses();
+            } catch (err) {
+                reportError('Duplicate course entries flagged', err);
             }
         }
 
         async function deleteCourse(id) {
-            const res = await fetch(`/api/courses/${id}`, { method: 'DELETE', headers });
-            if (res.ok) {
-                fetchCourses();
-                fetchStudents();
-            } else {
-                const data = await res.json();
-                alert(data.error || "Cannot delete course.");
+            if (!confirm('Delete this course? Students enrolled in it will lose the enrollment.')) return;
+            try {
+                await requestJson(`/api/courses/${id}`, { method: 'DELETE', headers });
+                await fetchCourses();
+                await fetchStudents();
+            } catch (err) {
+                reportError('Cannot delete course', err);
             }
         }
+
+        /* ---------- enrollment ---------- */
 
         async function handleEnrollment(e) {
             e.preventDefault();
@@ -502,40 +608,52 @@
                 enrollment_date: document.getElementById('enrollment_date').value
             };
 
-            const res = await fetch('/api/enrollments', { method: 'POST', headers, body: JSON.stringify(payload) });
-            const data = await res.json();
-
-            if (res.ok) {
-                alert(data.message);
-                fetchStudents();
-            } else {
-                alert("Enrollment Exception Encountered: " + (data.error || JSON.stringify(data.errors)));
+            try {
+                const data = await requestJson('/api/enrollments', {
+                    method: 'POST',
+                    headers,
+                    body: JSON.stringify(payload)
+                });
+                alert(data?.message ?? 'Enrollment completed.');
+                document.getElementById('enrollment-form').reset();
+                document.getElementById('enrollment_date').value = new Date().toISOString().split('T')[0];
+                await fetchStudents();
+            } catch (err) {
+                reportError('Enrollment exception encountered', err);
             }
         }
 
+        /* ---------- details modal ---------- */
+
         async function viewStudent(id) {
-            const res = await fetch(`/api/students/${id}`);
-            const s = await res.json();
+            try {
+                const s = await requestJson(`/api/students/${id}`);
+                const courses = Array.isArray(s.courses) ? s.courses : [];
 
-            let courseRows = s.courses.map(c =>
-                `<li><code>${c.course_code}</code> — ${c.course_name} (Enrolled: ${c.pivot.enrollment_date})</li>`
-            ).join('');
+                const courseRows = courses.length
+                    ? courses.map(c => `
+                        <li>
+                            <code>${escapeHtml(c.course_code)}</code> — ${escapeHtml(c.course_name)}
+                            (Enrolled: ${escapeHtml(c.pivot?.enrollment_date)})
+                        </li>`).join('')
+                    : '<li>No active enrollments for this profile found.</li>';
 
-            if (!courseRows) courseRows = '<li>No active enrollments for this profile found.</li>';
+                document.getElementById('details-body').innerHTML = `
+                    <p><b>Name:</b> ${escapeHtml(s.full_name)}</p>
+                    <p><b>Email:</b> ${escapeHtml(s.email)}</p>
+                    <p><b>Age:</b> ${escapeHtml(s.age)}</p>
+                    <p><b>Phone:</b> ${escapeHtml(s.phone_number)}</p>
+                    <p><b>Gender:</b> ${escapeHtml(s.gender)}</p>
+                    <p><b>Registered on:</b> ${escapeHtml(s.registration_date)}</p>
+                    <p><b>Status:</b> <span class="badge ${escapeHtml(s.status)}">${escapeHtml(s.status)}</span></p>
+                    <h3>Active Program Course Enrollments</h3>
+                    <ul>${courseRows}</ul>
+                `;
 
-            document.getElementById('details-body').innerHTML = `
-            <p><b>Name:</b> ${s.full_name}</p>
-            <p><b>Email:</b> ${s.email}</p>
-            <p><b>Age:</b> ${s.age}</p>
-            <p><b>Phone:</b> ${s.phone_number}</p>
-            <p><b>Gender:</b> ${s.gender}</p>
-            <p><b>Registered on:</b> ${s.registration_date}</p>
-            <p><b>Status:</b> <span class="badge ${s.status}">${s.status}</span></p>
-            <h3>Active Program Course Enrollments</h3>
-            <ul>${courseRows}</ul>
-        `;
-
-            document.getElementById('details-modal').style.display = 'flex';
+                document.getElementById('details-modal').style.display = 'flex';
+            } catch (err) {
+                reportError('Could not load student details', err);
+            }
         }
 
         function closeModal(id) {
