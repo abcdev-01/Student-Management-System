@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->integer('age');
             $table->string('phone_number');
-            $table->enum('gender', ['Male', 'Female', 'Other']);
+            $table->enum('gender', ['Male', 'Female']);
             $table->date('registration_date');
             $table->enum('status', ['Active', 'Graduated', 'Dropped'])->default('Active');
             $table->timestamps();

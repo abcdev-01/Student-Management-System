@@ -11,8 +11,28 @@ class Course extends Model
         'course_name',
     ];
 
-    public function students()
+    public function setCourseNameAttribute($value)
     {
+
+        $this->attributes['course_name'] = strtoupper($value);
+    }
+    public function getCourseCodeAttribute($value)
+    {
+        return strtoupper($value);
+
+    }
+    public function setCourseCodeAttribute($value)
+    {
+        $this->attributes['course_code'] = strtoupper($value);
+
+    }
+    public function getCourseNameAttribute(
+        $value
+    ) {
+        return strtoupper($value);
+    }
+    public function students(
+    ) {
         return $this->belongsToMany(Student::class, 'enrollments')
             ->withPivot('enrollment_date')
             ->withTimestamps();

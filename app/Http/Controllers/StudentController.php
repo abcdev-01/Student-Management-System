@@ -40,7 +40,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:students,email',
             'age' => 'required|integer|min:16',
             'phone_number' => 'required|string|max:20',
-            'gender' => 'required|in:Male,Female,Other',
+            'gender' => 'required|in:Male,Female',
             'registration_date' => 'required|date',
             'status' => 'required|in:Active,Graduated,Dropped',
         ]);
@@ -65,7 +65,7 @@ class StudentController extends Controller
             'email' => 'required|email|unique:students,email,' . $student->id,
             'age' => 'required|integer|min:16',
             'phone_number' => 'required|string|max:20',
-            'gender' => 'required|in:Male,Female,Other',
+            'gender' => 'required|in:Male,Female',
             'registration_date' => 'required|date',
             'status' => 'required|in:Active,Graduated,Dropped',
         ]);
