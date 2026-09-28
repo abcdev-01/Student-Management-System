@@ -7,36 +7,54 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function list()
+    public function index()
     {
-        return response()->json(Course::orderBy('id', 'desc')->get());
+        $courses = Course::all();
+        return view('courses.index', compact('courses'));
+    }
+
+    public function create()
+    {
+        return view('courses.create');
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'course_code' => 'required|string|unique:courses,course_code',
+            'course_code' => 'required|string|unique:courses,course_code|max:20',
             'course_name' => 'required|string|max:255',
         ]);
 
-        $course = Course::create($validated);
+        Course::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'course' => $course
-        ], 201);
+        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+    }
+
+    public function show(Course $course)
+    {
+        return view('courses.show', compact('course'));
+    }
+
+    public function edit(Course $course)
+    {
+        return view('courses.edit', compact('course'));
+    }
+
+    public function update(Request $request, Course $course)
+    {
+        $validated = $request->validate([
+            'course_code' => 'required|string|max:20|unique:courses,course_code,' . $course->id,
+            'course_name' => 'required|string|max:255',
+        ]);
+
+        $course->update($validated);
+
+        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
     }
 
     public function destroy(Course $course)
     {
-        if ($course->students()->exists()) {
-            return response()->json([
-                'error' => 'Cannot delete course with enrolled students.'
-            ], 422);
-        }
-
         $course->delete();
-
-        return response()->json(['success' => true]);
+        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
     }
 }

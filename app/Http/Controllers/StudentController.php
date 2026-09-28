@@ -3,16 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Student;
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class StudentController extends Controller
 {
-    public function index()
-    {
-        return view('dashboard');
-    }
-
-    public function list(Request $request)
+    public function index(Request $request)
     {
         $query = Student::query();
 
@@ -30,7 +26,15 @@ class StudentController extends Controller
             });
         }
 
-        return response()->json($query->with('courses')->orderBy('id', 'desc')->get());
+        $students = $query->get();
+        $courses = Course::all();
+
+        return view('students.index', compact('students', 'courses'));
+    }
+
+    public function create()
+    {
+        return view('students.create');
     }
 
     public function store(Request $request)
@@ -38,24 +42,27 @@ class StudentController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email',
-            'age' => 'required|integer|min:16',
+            'age' => 'required|integer|min:16|max:120',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:Male,Female',
             'registration_date' => 'required|date',
             'status' => 'required|in:Active,Graduated,Dropped',
         ]);
 
-        $student = Student::create($validated);
+        Student::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'student' => $student
-        ], 201);
+        return redirect()->route('students.index')->with('success', 'Student registered successfully.');
     }
 
     public function show(Student $student)
     {
-        return response()->json($student->load('courses'));
+        $student->load('courses');
+        return view('students.show', compact('student'));
+    }
+
+    public function edit(Student $student)
+    {
+        return view('students.edit', compact('student'));
     }
 
     public function update(Request $request, Student $student)
@@ -63,7 +70,7 @@ class StudentController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email,' . $student->id,
-            'age' => 'required|integer|min:16',
+            'age' => 'required|integer|min:16|max:120',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:Male,Female',
             'registration_date' => 'required|date',
@@ -72,16 +79,12 @@ class StudentController extends Controller
 
         $student->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'student' => $student
-        ]);
+        return redirect()->route('students.index')->with('success', 'Student updated successfully.');
     }
 
     public function destroy(Student $student)
     {
         $student->delete();
-
-        return response()->json(['success' => true]);
+        return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
 }

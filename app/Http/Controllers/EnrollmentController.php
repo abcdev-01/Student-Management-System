@@ -2,39 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Enrollment;
 use App\Models\Student;
+use App\Models\Course;
 use Illuminate\Http\Request;
 
 class EnrollmentController extends Controller
 {
-    public function enroll(Request $request)
+    public function index()
     {
-        $request->validate([
+        $enrollments = Enrollment::with(['student', 'course'])->get();
+        return view('enrollments.index', compact('enrollments'));
+    }
+
+    public function create()
+    {
+        $students = Student::all();
+        $courses = Course::all();
+        return view('enrollments.create', compact('students', 'courses'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
             'student_id' => 'required|exists:students,id',
             'course_id' => 'required|exists:courses,id',
             'enrollment_date' => 'required|date',
         ]);
 
-        $student = Student::findOrFail($request->student_id);
+        $exists = Enrollment::where('student_id', $validated['student_id'])
+            ->where('course_id', $validated['course_id'])
+            ->exists();
 
-        if ($student->courses()->where('course_id', $request->course_id)->exists()) {
-            return response()->json([
-                'error' => 'Student is already enrolled in this course.'
-            ], 422);
+        if ($exists) {
+            return back()->withErrors(['error' => 'Student is already enrolled in this course.']);
         }
 
-        $student->courses()->attach($request->course_id, [
-            'enrollment_date' => $request->enrollment_date,
-        ]);
+        Enrollment::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Enrolled successfully.',
-        ]);
+        return redirect()->route('enrollments.index')->with('success', 'Enrollment completed.');
     }
 
-    public function studentEnrollments(Student $student)
+    public function show(Enrollment $enrollment)
     {
-        return response()->json($student->courses);
+        return view('enrollments.show', compact('enrollment'));
+    }
+
+    public function edit(Enrollment $enrollment)
+    {
+        $students = Student::all();
+        $courses = Course::all();
+        return view('enrollments.edit', compact('enrollment', 'students', 'courses'));
+    }
+
+    public function update(Request $request, Enrollment $enrollment)
+    {
+        $validated = $request->validate([
+            'student_id' => 'required|exists:students,id',
+            'course_id' => 'required|exists:courses,id',
+            'enrollment_date' => 'required|date',
+        ]);
+
+        $enrollment->update($validated);
+
+        return redirect()->route('enrollments.index')->with('success', 'Enrollment updated.');
+    }
+
+    public function destroy(Enrollment $enrollment)
+    {
+        $enrollment->delete();
+        return redirect()->route('enrollments.index')->with('success', 'Enrollment deleted.');
     }
 }

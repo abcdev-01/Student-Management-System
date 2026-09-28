@@ -8,19 +8,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [StudentController::class, 'index'])->name('home');
 
-Route::prefix('api/students')->group(function () {
-    Route::get('/', [StudentController::class, 'list']);
-    Route::post('/', [StudentController::class, 'store']);
-    Route::get('/{student}', [StudentController::class, 'show']);
-    Route::put('/{student}', [StudentController::class, 'update']);
-    Route::delete('/{student}', [StudentController::class, 'destroy']);
-});
-
-Route::prefix('api/courses')->group(function () {
-    Route::get('/', [CourseController::class, 'list']);
-    Route::post('/', [CourseController::class, 'store']);
-    Route::delete('/{course}', [CourseController::class, 'destroy']);
-});
-
-Route::post('api/enrollments', [EnrollmentController::class, 'enroll']);
-Route::get('api/students/{student}/enrollments', [EnrollmentController::class, 'studentEnrollments']);
+Route::resource('students', StudentController::class);
+Route::resource('courses', CourseController::class);
+Route::resource('enrollments', EnrollmentController::class);
