@@ -18,8 +18,6 @@ class Student extends Model
         'status',
     ];
 
-    protected $appends = ['full_name'];
-
     public function getFullNameAttribute(): string
     {
         return strtoupper(trim($this->first_name . ' ' . $this->last_name));
