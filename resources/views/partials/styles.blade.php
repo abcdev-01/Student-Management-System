@@ -1,17 +1,14 @@
-
 <style>
     :root {
         --primary: #B33534;
         --primary-hover: #8c2827;
         --secondary: #D1CEBD;
         --secondary-hover: #b8b4a3;
-        --accent: #E3EBC0;
         --bg: #FAFCEE;
         --danger: #B33534;
         --success: #E3EBC0;
         --text: #333333;
         --text-muted: #666666;
-        --border: #D1CEBD;
     }
 
     * {
@@ -182,28 +179,20 @@
     .badge {
         display: inline-block;
         padding: 2px 8px;
-        border: 1px solid var(--border);
-        border-radius: 12px;
         font-size: 12px;
         font-weight: bold;
     }
 
     .badge.Active {
-        background-color: var(--accent);
         color: #4a5d23;
-        border-color: #b5c480;
     }
 
     .badge.Graduated {
-        background-color: var(--secondary);
-        color: #5a4e3c;
-        border-color: #b8b4a3;
+        color: blue;
     }
 
     .badge.Dropped {
-        background-color: #fce8e8;
         color: var(--primary);
-        border-color: #e8a3a3;
     }
 
     .alert {

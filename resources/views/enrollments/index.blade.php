@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Course Enrollments')
 @section('content')
     <div class="nav-links">
         <a href="{{ route('students.index') }}">Students</a>
@@ -31,10 +32,12 @@
                             <td>{{ $enrollment->enrollment_date }}</td>
                             <td>
                                 <a href="{{ route('enrollments.edit', $enrollment) }}" class="btn-sm">Edit</a>
-                                <form action="{{ route('enrollments.destroy', $enrollment) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('enrollments.destroy', $enrollment) }}" method="POST"
+                                    style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-danger btn-sm" onclick="return confirm('Delete this enrollment?')">Delete</button>
+                                    <button type="submit" class="btn-danger btn-sm"
+                                        onclick="return confirm('Delete this enrollment?')">Delete</button>
                                 </form>
                             </td>
                         </tr>

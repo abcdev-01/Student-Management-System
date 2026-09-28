@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Courses')
+@section('title', 'Courses List')
 
 @section('content')
     <div class="nav-links">

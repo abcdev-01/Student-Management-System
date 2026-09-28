@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@section('title', 'Edit Enrollment')
 @section('content')
     <div class="nav-links">
         <a href="{{ route('students.index') }}">Students</a>
@@ -37,7 +38,8 @@
 
             <div class="form-group">
                 <label for="enrollment_date">Enrollment Date</label>
-                <input type="date" id="enrollment_date" name="enrollment_date" value="{{ old('enrollment_date', $enrollment->enrollment_date) }}" required>
+                <input type="date" id="enrollment_date" name="enrollment_date"
+                    value="{{ old('enrollment_date', $enrollment->enrollment_date) }}" required>
             </div>
 
             <button type="submit">Update Enrollment</button>
