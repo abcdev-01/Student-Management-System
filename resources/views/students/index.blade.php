@@ -1,30 +1,24 @@
 @extends('layouts.app')
 
-@section('title', 'Student Details')
+@section('title', 'Student Roster')
 
 @section('content')
-    <div class="nav-links">
-        <a href="{{ route('students.index') }}">Students</a>
-        <a href="{{ route('courses.index') }}">Courses</a>
-        <a href="{{ route('enrollments.index') }}">Enrollments</a>
-    </div>
+    <div class="content-card">
+        <h2 class="card-heading">Core Student Roster Database</h2>
 
-    <div class="card">
-        <h2>Core Student Roster Database</h2>
+        <div class="toolbar">
+            <form method="GET" action="{{ route('students.index') }}" class="filter-form">
+                <input type="text" name="search" class="filter-input" placeholder="Search by name ..."
+                    value="{{ request('search') }}" style="width: 250px;">
 
-        <div class="flex-actions">
-            <form method="GET" action="{{ route('students.index') }}" class="flex-actions" style="margin-bottom:0;">
-                <input type="text" name="search" placeholder="Search by name ..." value="{{ request('search') }}"
-                    style="width: 250px;">
-
-                <select name="status">
+                <select name="status" class="filter-select">
                     <option value="">-- Status View Filter --</option>
                     <option value="Active" {{ request('status') == 'Active' ? 'selected' : '' }}>Active Only</option>
                     <option value="Graduated" {{ request('status') == 'Graduated' ? 'selected' : '' }}>Graduated Only</option>
                     <option value="Dropped" {{ request('status') == 'Dropped' ? 'selected' : '' }}>Dropped Only</option>
                 </select>
 
-                <select name="course_id">
+                <select name="course_id" class="filter-select">
                     <option value="">-- Filter by Enrolled Course --</option>
                     @foreach($courses as $course)
                         <option value="{{ $course->id }}" {{ request('course_id') == $course->id ? 'selected' : '' }}>
@@ -33,15 +27,15 @@
                     @endforeach
                 </select>
 
-                <button type="submit" class="btn-sm">Filter</button>
-                <a href="{{ route('students.index') }}" class="btn-reset">Reset</a>
+                <button type="submit" class="btn-apply-filter">Apply Filter</button>
+                <a href="{{ route('students.index') }}" class="btn-clear-filter">Clear Filter</a>
             </form>
 
-            <a href="{{ route('students.create') }}" class="btn">Register Student</a>
+            <a href="{{ route('students.create') }}" class="btn-add-student">Register Student</a>
         </div>
 
-        <div class="table-container">
-            <table>
+        <div class="table-wrapper">
+            <table class="data-table">
                 <thead>
                     <tr>
                         <th>Full Name</th>
@@ -56,22 +50,26 @@
                         <tr>
                             <td>{{ $student->full_name }}</td>
                             <td>{{ $student->email }}</td>
-                            <td><span class="badge {{ $student->status }}">{{ $student->status }}</span></td>
+                            <td>
+                                <span class="status-badge status-{{ strtolower($student->status) }}">
+                                    {{ $student->status }}
+                                </span>
+                            </td>
                             <td>{{ $student->registration_date }}</td>
                             <td>
-                                <a href="{{ route('students.show', $student) }}" class="btn-secondary ">View</a>
-                                <a href="{{ route('students.edit', $student) }}" class="btn-sm">Edit</a>
+                                <a href="{{ route('students.show', $student) }}" class="btn-view">View</a>
+                                <a href="{{ route('students.edit', $student) }}" class="btn-edit">Edit</a>
                                 <form action="{{ route('students.destroy', $student) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-danger btn-sm"
+                                    <button type="submit" class="btn-delete"
                                         onclick="return confirm('Confirm student profile purging?')">Delete</button>
                                 </form>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">No students found.</td>
+                            <td colspan="5" class="empty-row">No students found.</td>
                         </tr>
                     @endforelse
                 </tbody>

@@ -3,37 +3,56 @@
 @section('title', 'Student Profile')
 
 @section('content')
-    <div class="nav-links">
-        <a href="{{ route('students.index') }}">Students</a>
-        <a href="{{ route('courses.index') }}">Courses</a>
-        <a href="{{ route('enrollments.index') }}">Enrollments</a>
-    </div>
+    <div class="content-card narrow">
+        <h2 class="card-heading">Student Profile</h2>
 
-    <div class="card">
-        <h2>Student Profile</h2>
+        <div class="profile-field">
+            <span class="profile-label">Name:</span>
+            <span class="profile-value">{{ $student->full_name }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Email:</span>
+            <span class="profile-value">{{ $student->email }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Age:</span>
+            <span class="profile-value">{{ $student->age }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Phone:</span>
+            <span class="profile-value">{{ $student->phone_number }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Gender:</span>
+            <span class="profile-value">{{ $student->gender }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Registered on:</span>
+            <span class="profile-value">{{ $student->registration_date }}</span>
+        </div>
+        <div class="profile-field">
+            <span class="profile-label">Status:</span>
+            <span class="status-badge status-{{ strtolower($student->status) }}">{{ $student->status }}</span>
+        </div>
 
-        <p><b>Name:</b> {{ $student->full_name }}</p>
-        <p><b>Email:</b> {{ $student->email }}</p>
-        <p><b>Age:</b> {{ $student->age }}</p>
-        <p><b>Phone:</b> {{ $student->phone_number }}</p>
-        <p><b>Gender:</b> {{ $student->gender }}</p>
-        <p><b>Registered on:</b> {{ $student->registration_date }}</p>
-        <p><b>Status:</b> <span class="badge {{ $student->status }}">{{ $student->status }}</span></p>
+        <h3 style="color: var(--primary); margin-top: 24px;">Active Program Course Enrollments</h3>
 
-        <h3>Active Program Course Enrollments</h3>
         @if($student->courses->count())
-            <ul>
+            <ul class="enrollment-list">
                 @foreach($student->courses as $course)
-                    <li>
-                        <code>{{ $course->course_code }}</code> — {{ $course->course_name }}
+                    <li class="enrollment-item">
+                        <span class="enrollment-code">{{ $course->course_code }}</span>
+                        — {{ $course->course_name }}
                         (Enrolled: {{ $course->pivot->enrollment_date }})
                     </li>
                 @endforeach
             </ul>
         @else
-            <p>No active enrollments for this profile found.</p>
+            <p style="color: var(--text-muted);">No active enrollments for this profile found.</p>
         @endif
 
-        <a href="{{ route('students.index') }}" class="btn-secondary" style="margin-top:16px;">Back  </a>
+        <div class="form-actions">
+            <a href="{{ route('students.index') }}" class="btn-cancel">Back to Roster</a>
+        </div>
     </div>
 @endsection
