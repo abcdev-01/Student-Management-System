@@ -34,6 +34,6 @@
             <p>No active enrollments for this profile found.</p>
         @endif
 
-        <a href="{{ route('students.index') }}" class="btn-secondary" style="margin-top:16px;">Back to Roster</a>
+        <a href="{{ route('students.index') }}" class="btn-secondary" style="margin-top:16px;">Back  </a>
     </div>
 @endsection

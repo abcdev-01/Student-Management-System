@@ -22,6 +22,7 @@
                     <tr>
                         <th>Code</th>
                         <th>Name</th>
+                        <th>Created_at</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -30,12 +31,14 @@
                         <tr>
                             <td>{{ $course->course_code }}</td>
                             <td>{{ $course->course_name }}</td>
+                            <td>{{ $course->created_at }}</td>
                             <td>
                                 <a href="{{ route('courses.edit', $course) }}" class="btn-sm">Edit</a>
                                 <form action="{{ route('courses.destroy', $course) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-danger btn-sm" onclick="return confirm('Delete this course? Students enrolled in it will lose the enrollment.')">Delete</button>
+                                    <button type="submit" class="btn-danger btn-sm"
+                                        onclick="return confirm('Delete this course? Students enrolled in it will lose the enrollment.')">Delete</button>
                                 </form>
                             </td>
                         </tr>

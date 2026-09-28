@@ -14,7 +14,8 @@
 
         <div class="flex-actions">
             <form method="GET" action="{{ route('students.index') }}" class="flex-actions" style="margin-bottom:0;">
-                <input type="text" name="search" placeholder="Search by name ..." value="{{ request('search') }}" style="width: 250px;">
+                <input type="text" name="search" placeholder="Search by name ..." value="{{ request('search') }}"
+                    style="width: 250px;">
 
                 <select name="status">
                     <option value="">-- Status View Filter --</option>
@@ -33,7 +34,7 @@
                 </select>
 
                 <button type="submit" class="btn-sm">Filter</button>
-                <a href="{{ route('students.index') }}" class="btn-secondary btn-sm">Reset</a>
+                <a href="{{ route('students.index') }}" class="btn-reset">Reset</a>
             </form>
 
             <a href="{{ route('students.create') }}" class="btn">Register Student</a>
@@ -58,12 +59,13 @@
                             <td><span class="badge {{ $student->status }}">{{ $student->status }}</span></td>
                             <td>{{ $student->registration_date }}</td>
                             <td>
-                                <a href="{{ route('students.show', $student) }}" class="btn-secondary btn-sm">View</a>
+                                <a href="{{ route('students.show', $student) }}" class="btn-secondary ">View</a>
                                 <a href="{{ route('students.edit', $student) }}" class="btn-sm">Edit</a>
                                 <form action="{{ route('students.destroy', $student) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn-danger btn-sm" onclick="return confirm('Confirm student profile purging?')">Delete</button>
+                                    <button type="submit" class="btn-danger btn-sm"
+                                        onclick="return confirm('Confirm student profile purging?')">Delete</button>
                                 </form>
                             </td>
                         </tr>

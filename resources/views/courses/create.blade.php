@@ -1,7 +1,4 @@
 @extends('layouts.app')
-
-@section('title', 'Create Course')
-
 @section('content')
     <div class="nav-links">
         <a href="{{ route('students.index') }}">Students</a>

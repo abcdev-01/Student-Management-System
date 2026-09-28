@@ -1,9 +1,17 @@
+
 <style>
     :root {
-        --primary: #44a9f4;
-        --danger: #dc2626;
-        --success: #38ce3c;
-        --bg: white;
+        --primary: #B33534;
+        --primary-hover: #8c2827;
+        --secondary: #D1CEBD;
+        --secondary-hover: #b8b4a3;
+        --accent: #E3EBC0;
+        --bg: #FAFCEE;
+        --danger: #B33534;
+        --success: #E3EBC0;
+        --text: #333333;
+        --text-muted: #666666;
+        --border: #D1CEBD;
     }
 
     * {
@@ -12,10 +20,10 @@
 
     body {
         font-family: system-ui, sans-serif;
-        background: var(--bg);
+        background-color: var(--bg);
+        color: var(--text);
         margin: 0;
         padding: 24px;
-        color: #1e293b;
     }
 
     .container {
@@ -36,18 +44,24 @@
     }
 
     .card {
+        background-color: #ffffff;
         padding: 24px;
-        border: 1px solid gray;
+        border: 1px solid var(--border);
         border-radius: 4px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         margin-bottom: 24px;
     }
 
     h2 {
         margin-top: 0;
-        border-bottom: 2px solid #e2e8f0;
+        border-bottom: 2px solid var(--border);
         padding-bottom: 8px;
         font-size: 18px;
+        color: var(--primary);
+    }
+
+    h3 {
+        color: var(--primary);
     }
 
     .form-group {
@@ -60,16 +74,28 @@
         font-weight: 600;
         margin-bottom: 4px;
         font-size: 14px;
+        color: var(--text);
     }
 
-    input, select {
+    input,
+    select {
         padding: 8px;
-        border: 1px solid gray;
+        border: 1px solid var(--border);
         border-radius: 4px;
         font-size: 14px;
+        background-color: #ffffff;
+        color: var(--text);
     }
 
-    button, .btn {
+    input:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(179, 53, 52, 0.2);
+    }
+
+    button,
+    .btn {
         background: var(--primary);
         color: white;
         border: none;
@@ -80,21 +106,37 @@
         font-size: 14px;
         text-decoration: none;
         display: inline-block;
+        transition: background 0.2s ease;
     }
 
-    button:hover, .btn:hover {
-        opacity: 0.4;
+    button:hover,
+    .btn:hover {
+        background: var(--primary-hover);
     }
 
-    button.btn-danger, .btn-danger {
-        background: var(--danger);
+    button.btn-danger,
+    .btn-danger {
+        background: var(--primary);
     }
 
-    button.btn-secondary, .btn-secondary {
-        background: #64748b;
+    button.btn-danger:hover,
+    .btn-danger:hover {
+        background: var(--primary-hover);
     }
 
-    button.btn-sm, .btn-sm {
+    button.btn-secondary,
+    .btn-secondary {
+        background: var(--secondary);
+        color: var(--text);
+    }
+
+    button.btn-secondary:hover,
+    .btn-secondary:hover {
+        background: var(--secondary-hover);
+    }
+
+    button.btn-sm,
+    .btn-sm {
         padding: 6px 10px;
         font-size: 12px;
     }
@@ -111,16 +153,22 @@
         white-space: nowrap;
     }
 
-    th, td {
+    th,
+    td {
         text-align: left;
         padding: 10px;
-        border-bottom: 1px solid #e2e8f0;
+        border-bottom: 1px solid var(--border);
         font-size: 14px;
     }
 
     th {
-        background: #fffef9;
+        background-color: var(--accent);
         font-weight: 600;
+        color: var(--text);
+    }
+
+    tr:hover {
+        background-color: #fcfdf7;
     }
 
     .flex-actions {
@@ -134,25 +182,28 @@
     .badge {
         display: inline-block;
         padding: 2px 8px;
-        border: 1px solid gray;
+        border: 1px solid var(--border);
         border-radius: 12px;
         font-size: 12px;
         font-weight: bold;
     }
 
     .badge.Active {
-        background: none;
-        color: #16a34a;
+        background-color: var(--accent);
+        color: #4a5d23;
+        border-color: #b5c480;
     }
 
     .badge.Graduated {
-        background: none;
-        color: #2563eb;
+        background-color: var(--secondary);
+        color: #5a4e3c;
+        border-color: #b8b4a3;
     }
 
     .badge.Dropped {
-        background: none;
-        color: #dc2626;
+        background-color: #fce8e8;
+        color: var(--primary);
+        border-color: #e8a3a3;
     }
 
     .alert {
@@ -162,15 +213,15 @@
     }
 
     .alert-success {
-        background: #dcfce7;
-        color: #166534;
-        border: 1px solid #166534;
+        background-color: var(--success);
+        color: #4a5d23;
+        border: 1px solid #b5c480;
     }
 
     .alert-danger {
-        background: #fee2e2;
-        color: #991b1b;
-        border: 1px solid #991b1b;
+        background-color: #fce8e8;
+        color: var(--primary);
+        border: 1px solid #e8a3a3;
     }
 
     .nav-links {
@@ -187,5 +238,6 @@
 
     .nav-links a:hover {
         text-decoration: underline;
+        color: var(--primary-hover);
     }
 </style>
