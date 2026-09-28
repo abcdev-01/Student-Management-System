@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Student Roster')
+@section('title', 'Student List')
 
 @section('content')
     <div class="content-card">
-        <h2 class="card-heading">Core Student Roster Database</h2>
+        <h2 class="card-heading">List of Student available</h2>
 
         <div class="toolbar">
             <form method="GET" action="{{ route('students.index') }}" class="filter-form">

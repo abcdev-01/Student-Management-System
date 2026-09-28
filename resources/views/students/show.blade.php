@@ -35,24 +35,24 @@
             <span class="status-badge status-{{ strtolower($student->status) }}">{{ $student->status }}</span>
         </div>
 
-        <h3 style="color: var(--primary); margin-top: 24px;">Active Program Course Enrollments</h3>
+        <h4 style="color: var(--primary); margin-top: 24px;">Active Program Course Enrollments</h3>
 
-        @if($student->courses->count())
-            <ul class="enrollment-list">
-                @foreach($student->courses as $course)
-                    <li class="enrollment-item">
-                        <span class="enrollment-code">{{ $course->course_code }}</span>
-                        — {{ $course->course_name }}
-                        (Enrolled: {{ $course->pivot->enrollment_date }})
-                    </li>
-                @endforeach
-            </ul>
-        @else
-            <p style="color: var(--text-muted);">No active enrollments for this profile found.</p>
-        @endif
+            @if($student->courses->count())
+                <ul class="enrollment-list">
+                    @foreach($student->courses as $course)
+                        <li class="enrollment-item">
+                            <span class="enrollment-code">{{ $course->course_code }}</span>
+                            — {{ $course->course_name }}
+                            (Enrolled: {{ $course->pivot->enrollment_date }})
+                        </li>
+                    @endforeach
+                </ul>
+            @else
+                <p style="color: var(--text-muted);">No active enrollments for this profile found.</p>
+            @endif
 
-        <div class="form-actions">
-            <a href="{{ route('students.index') }}" class="btn-cancel">Back to Roster</a>
-        </div>
+            <div class="form-actions">
+                <a href="{{ route('students.index') }}" class="btn-cancel">Back to List</a>
+            </div>
     </div>
 @endsection

@@ -5,7 +5,7 @@
         --secondary: #D1CEBD;
         --secondary-hover: #b8b4a3;
         --accent: #E3EBC0;
-        --bg: #FAFCEE;
+        --bg: #fbfce5;
         --text: #333333;
         --text-muted: #666666;
         --border: #D1CEBD;
@@ -29,6 +29,8 @@
         margin: 0 auto 24px auto;
         display: flex;
         gap: 16px;
+        
+
     }
 
     .page-nav a {
@@ -210,23 +212,23 @@
     .btn-delete {
         padding: 6px 10px;
         font-size: 12px;
+        font-weight: 500;
     }
     .btn-edit{
         color:white;
         display: inline-block;
         border-radius: 4px;
         cursor: pointer;
-        font-weight: 500;
         text-decoration: none;
         text-align: center;
         font-family: inherit;
-        line-height: 1.2;
         background: rgba(82, 177, 82, 0.968);
     }
     .btn-delete{
         color: white;
         border: none;
         font-family: inherit;
+        text-align: center;
         border-radius: 4px;
         background: rgb(224, 112, 112);
     }
@@ -255,10 +257,6 @@
         background-color: var(--accent);
         font-weight: 600;
         color: var(--text);
-    }
-
-    .data-table tr:hover {
-        background-color: #fcfdf7;
     }
 
     .empty-row {
