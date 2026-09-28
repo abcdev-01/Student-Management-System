@@ -38,7 +38,8 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Full Name</th>
+                        <th>S/N</th>
+                        <th>Student Name</th>
                         <th>Email Address</th>
                         <th>Status</th>
                         <th>Registered</th>
@@ -48,6 +49,7 @@
                 <tbody>
                     @forelse($students as $student)
                         <tr>
+                            <td>{{$loop->iteration  }}</td>
                             <td>{{ $student->full_name }}</td>
                             <td>{{ $student->email }}</td>
                             <td>

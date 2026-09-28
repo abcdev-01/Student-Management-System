@@ -11,10 +11,17 @@
             @method('PUT')
 
             <div class="form-field">
-                <label class="form-label" for="full_name">Full Name</label>
-                <input type="text" id="full_name" name="full_name" class="form-input"
-                    value="{{ old('full_name', $student->full_name) }}" required>
+                <label class="form-label" for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" class="form-input"
+                    value="{{ old('firstname', $student->first_name) }}" required>
                 @error('full_name')<span class="form-error">{{ $message }}</span>@enderror
+            </div>
+
+            <div class="form-field">
+                <label class="from-label" for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name',$student->last_name)
+         }}" required>
+                @error('last_name')<span class="form-error">{{ $message}}</span>@enderror
             </div>
 
             <div class="form-field">

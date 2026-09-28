@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Student extends Model
 {
-
     protected $fillable = [
-        'full_name',
+        'first_name',
+        'last_name',
         'email',
         'age',
         'phone_number',
@@ -16,20 +18,17 @@ class Student extends Model
         'status',
     ];
 
-    public function setFullNameAttribute($value)
+    protected $appends = ['full_name'];
+
+    public function getFullNameAttribute(): string
     {
-        $this->attributes['full_name'] = strtoupper($value);
+        return strtoupper(trim($this->first_name . ' ' . $this->last_name));
     }
 
-    public function getFullNameAttribute($value)
+    public function courses(): BelongsToMany
     {
-        return strtoupper($value);
-    }
-
-    public function courses(
-    ) {
         return $this->belongsToMany(Course::class, 'enrollments')
-            ->withPivot('enrollment_date')
-            ->withTimestamps();
+                    ->withPivot('enrollment_date')
+                    ->withTimestamps();
     }
 }

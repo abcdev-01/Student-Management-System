@@ -10,10 +10,15 @@
             @csrf
 
             <div class="form-field">
-                <label class="form-label" for="full_name">Full Name</label>
-                <input type="text" id="full_name" name="full_name" class="form-input"
-                    value="{{ old('full_name') }}" required>
-                @error('full_name')<span class="form-error">{{ $message }}</span>@enderror
+                <label class="form-label" for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" class="form-input"
+                    value="{{ old('first_name') }}" required>
+                @error('first_name')<span class="form-error">{{ $message }}</span>@enderror
+            </div>
+            <div class="form-field">
+                <label class="from-label" for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" class="form-input" value="{{ old('last_name') }}" required>
+                @error('last_name')<span class="form-error">{{ $message}}</span>@enderror
             </div>
 
             <div class="form-field">

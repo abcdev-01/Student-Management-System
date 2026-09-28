@@ -15,7 +15,8 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Student</th>
+                        <th>S/N</th>
+                        <th>Student Name</th>
                         <th>Course</th>
                         <th>Enrollment Date</th>
                         <th>Actions</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @forelse($enrollments as $enrollment)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $enrollment->student->full_name }}</td>
                             <td>{{ $enrollment->course->course_name }}</td>
                             <td>{{ $enrollment->enrollment_date }}</td>

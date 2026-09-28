@@ -15,6 +15,7 @@
             <table class="data-table">
                 <thead>
                     <tr>
+                        <th>S/N</th>
                         <th>Code</th>
                         <th>Name</th>
                         <th>Created at</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @forelse($courses as $course)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $course->course_code }}</td>
                             <td>{{ $course->course_name }}</td>
                             <td>{{ $course->created_at}}</td>
