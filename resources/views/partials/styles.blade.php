@@ -1,11 +1,11 @@
 <style>
     :root {
-        --primary: #74c6f2;
-        --primary-hover: #0b8aa1;
+        --primary: #0b8aa1;
+        --primary-hover: #74c6f2 ;
         --secondary: #D1CEBD;
         --secondary-hover: #b8b4a3;
-        --accent: #E3EBC0;
-        --bg: #fbfce5;
+        --accent: #ecf0de;
+        --bg: #fcfce758;
         --text: #333333;
         --text-muted: #666666;
         --border: #D1CEBD;
@@ -249,7 +249,7 @@
     .data-table td {
         text-align: left;
         padding: 10px;
-        border-bottom: 1px solid var(--border);
+        border: 1px solid var(--border);
         font-size: 14px;
     }
 
