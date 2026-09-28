@@ -13,7 +13,11 @@ class StudentController extends Controller
         $query = Student::query();
 
         if ($request->filled('search')) {
-            $query->where('full_name', 'like', '%' . $request->search . '%');
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('first_name', 'like', "%{$search}%")
+                  ->orWhere('last_name', 'like', "%{$search}%");
+            });
         }
 
         if ($request->filled('status')) {
@@ -42,7 +46,7 @@ class StudentController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-             'email' => 'required|email|unique:students,email',
+            'email' => 'required|email|unique:students,email',
             'age' => 'required|integer|min:16|max:120',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:Male,Female',
