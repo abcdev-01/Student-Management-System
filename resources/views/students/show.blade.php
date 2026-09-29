@@ -35,7 +35,7 @@
             <span class="status-badge status-{{ strtolower($student->status) }}">{{ $student->status }}</span>
         </div>
 
-        <h4 style="color: var(--primary); margin-top: 24px;">Active Program Course Enrollments</h3>
+        <h4 style="color: var(--primary); margin-top: 24px;">Active Program Course Enrollments</h4>
 
             @if($student->courses->count())
                 <ul class="enrollment-list">
