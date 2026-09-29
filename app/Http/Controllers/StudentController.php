@@ -76,7 +76,7 @@ class StudentController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email,' . $student->id,
-            'age' => 'required|integer|min:16|max:120',
+            'age' => 'required|integer|min:16|max:70',
             'phone_number' => 'required|string|max:20',
             'gender' => 'required|in:Male,Female',
             'registration_date' => 'required|date',
