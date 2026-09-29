@@ -54,7 +54,7 @@
             <div class="form-field">
                 <label class="form-label" for="registration_date">Registration Date</label>
                 <input type="date" id="registration_date" name="registration_date" class="form-input"
-                    value="{{ old('registration_date', date('Y-m-d')) }}" required>
+                    value="{{ old('registration_date', date('Y-m-d H:i:s')) }}" required>
                 @error('registration_date')<span class="form-error">{{ $message }}</span>@enderror
             </div>
 
