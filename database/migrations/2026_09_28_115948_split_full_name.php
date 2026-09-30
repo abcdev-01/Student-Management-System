@@ -24,7 +24,7 @@ return new class extends Migration {
             }
         });
 
-        // Drop the old column
+
         Schema::table('students', function (Blueprint $table) {
             $table->dropColumn('full_name');
         });
